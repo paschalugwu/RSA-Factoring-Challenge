@@ -154,6 +154,61 @@ This task is an extension of Task 0 with the following differences:
 
 How far can you go in less than 5 seconds?
 
+Explanation of the code is as follows:
+
+```python
+#!/usr/bin/python3
+
+# We import the necessary modules
+from fractions import gcd
+from sys import argv
+
+"""
+The fraction module provides support for rational numbers, which are used to perform the gcd calculation. The sys module is used to access command-line argument.
+Next, define a function to perform the Pollard's Rho algorithm. Pollard's Rho algorithm is a powerful tool for factoring large composite numbers, especially when dealing with numbers that have small prime factors. It is widely used in practice and forms an integral part of many modern factorization algorithms.
+"""
+def pollards_rho(n):
+    x = 2
+    y = 2
+    d = 1
+    f = lambda x: (x**2 + 1) % n
+    while d == 1:
+        x = f(x)
+        y = f(f(y))
+        d = gcd(abs(x - y), n)
+    if d != n:
+        return d
+"""
+The Pollard's Rho algorithm for finding a factor of a number. It works repeatedly applying the function f(x) to a starting value x until a cycle is detected. The cycle then contains a factor of n, which is returned.
+
+In the code above, the pollards_rho function takes a number n as input and returns a factor of n if one exists. It initializes the variables x, y, and d to 2, 2, and 1, respectively. It then defines the function f to be the sucessor function of the quadratic polynomial x^2 + 1(mode n). Finally, it enters a loop that repeatedly applies f to x and y, and calculates the gcd of the absolute difference between x and y and n. If the gcd is not 1, it means that a factor of n has been found, and the function returns it.
+"""
+
+# Define a function to read the input file and perform the RSA factorization
+def read_file():
+    with open(argv[1]) as f:
+        for number in f:
+            num = int(number)
+            if num % 2 == 0:
+                print("{:d}={}*{}".format(num, num // 2, 2))
+            else:
+                p = pollards_rho(num)
+                f1 = p
+                f2 = int(num / p)
+                print("{}={}*{}".format(num, f1, f2))
+"""
+The read_file function takes no input and reads the input file specified by the command-line argument. It then iterates over each number in the file and performs the RSA factorization using the pollards_rho function. If the number is even, it is factored as 2*k, where k is an integer. Otherwise, it is factored as p * q, wher p and q are prime numbers. The results are printed to the console.
+"""
+
+# Check if the script is being run as the main program
+if __name__ == "__main__":
+    read_file()
+
+"""
+This code is used to ensure that the read_file function is called if the script is being run as the main program. This is necessary because the read_file function reads the command-line argument, which is only available when the script is run as the main program
+"""
+```
+
 Example:
 ```bash
 $ cat tests/rsa-1
